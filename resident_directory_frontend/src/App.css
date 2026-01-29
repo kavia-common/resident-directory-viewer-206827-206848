@@ -1,104 +1,539 @@
-/* CSS Variables for Theme Management */
+/* Retro Resident Directory Theme (frontend-only)
+   - High-contrast neon accents
+   - Subtle scanline overlay
+   - Accessible focus + readable typography
+*/
+
 :root {
-  /* Light theme colors */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f8f9fa;
-  --text-primary: #282c34;
-  --text-secondary: #61dafb;
-  --border-color: #e9ecef;
-  --button-bg: #007bff;
-  --button-text: #ffffff;
+  --bg: #0b1020;
+  --surface: #111a33;
+  --surface-2: #0f1730;
+  --border: rgba(120, 255, 240, 0.22);
+  --text: rgba(240, 255, 252, 0.92);
+  --muted: rgba(240, 255, 252, 0.72);
+
+  --neon-cyan: #2fffe2;
+  --neon-pink: #ff2bd6;
+  --neon-yellow: #ffe66d;
+
+  --shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+  --ring: 0 0 0 3px rgba(47, 255, 226, 0.35), 0 0 0 1px rgba(47, 255, 226, 0.6);
+
+  --radius: 14px;
+
+  --font-ui: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+    Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
 }
 
-[data-theme="dark"] {
-  /* Dark theme colors */
-  --bg-primary: #1a1a1a;
-  --bg-secondary: #282c34;
-  --text-primary: #ffffff;
-  --text-secondary: #61dafb;
-  --border-color: #404040;
-  --button-bg: #0056b3;
-  --button-text: #ffffff;
+* {
+  box-sizing: border-box;
 }
 
 .App {
-  text-align: center;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
   min-height: 100vh;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: var(--bg-secondary);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: var(--text-primary);
-  transition: background-color 0.3s ease;
+  color: var(--text);
+  font-family: var(--font-ui);
+  background:
+    radial-gradient(800px 600px at 15% 10%, rgba(255, 43, 214, 0.20), transparent 55%),
+    radial-gradient(900px 700px at 80% 20%, rgba(47, 255, 226, 0.18), transparent 55%),
+    radial-gradient(900px 700px at 50% 100%, rgba(255, 230, 109, 0.10), transparent 60%),
+    linear-gradient(180deg, #070a14 0%, var(--bg) 45%, #070a14 100%);
   position: relative;
 }
 
-.App-link {
-  color: var(--text-secondary);
-  transition: color 0.3s ease;
+/* Scanline overlay */
+.App::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05) 0px,
+    rgba(255, 255, 255, 0.05) 1px,
+    rgba(0, 0, 0, 0) 3px,
+    rgba(0, 0, 0, 0) 6px
+  );
+  opacity: 0.10;
+  mix-blend-mode: overlay;
 }
 
-.theme-toggle {
+.skipLink {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  background-color: var(--button-bg);
-  color: var(--button-text);
-  border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
+  left: -999px;
+  top: 0;
+  background: var(--surface);
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  z-index: 1000;
+}
+.skipLink:focus {
+  left: 12px;
+  top: 12px;
+  outline: none;
+  box-shadow: var(--ring);
+}
+
+.srOnly {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.rdHeader {
+  padding: 22px 18px 14px;
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+  background: linear-gradient(180deg, rgba(17, 26, 51, 0.80), rgba(17, 26, 51, 0.40));
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.rdHeader__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.rdBrand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rdBrand__badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: rgba(5, 10, 18, 0.95);
+  background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+  box-shadow: 0 0 20px rgba(47, 255, 226, 0.18), 0 0 28px rgba(255, 43, 214, 0.14);
+}
+
+.rdBrand__title {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.rdBrand__subtitle {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+
+.rdStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.rdChip {
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(15, 23, 48, 0.75);
+  font-size: 12px;
+  color: var(--muted);
+}
+.rdChip strong {
+  color: var(--text);
+}
+
+.rdToolbar {
+  max-width: 1200px;
+  margin: 14px auto 0;
+  display: grid;
+  grid-template-columns: 1fr 210px auto;
+  gap: 10px;
+}
+
+.rdSearch,
+.rdSelect {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(15, 23, 48, 0.72);
+  color: var(--text);
+  padding: 12px 12px;
   font-size: 14px;
-  font-weight: 600;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+.rdSearch::placeholder {
+  color: rgba(240, 255, 252, 0.55);
+}
+
+.rdSearch:focus,
+.rdSelect:focus {
+  outline: none;
+  box-shadow: var(--ring);
+}
+
+.rdBtn {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: linear-gradient(180deg, rgba(47, 255, 226, 0.18), rgba(47, 255, 226, 0.10));
+  color: var(--text);
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
-.theme-toggle:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  opacity: 0.9;
+.rdBtn:hover {
+  border-color: rgba(47, 255, 226, 0.55);
+  box-shadow: 0 0 0 1px rgba(47, 255, 226, 0.35), 0 10px 24px rgba(0, 0, 0, 0.25);
 }
 
-.theme-toggle:active {
-  transform: translateY(0);
+.rdBtn:focus {
+  outline: none;
+  box-shadow: var(--ring);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.rdBtn--ghost {
+  background: rgba(15, 23, 48, 0.60);
+}
+
+.rdResultLine {
+  max-width: 1200px;
+  margin: 10px auto 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.rdMain {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 18px;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 16px;
+}
+
+.rdListPane,
+.rdDetailsPane {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(17, 26, 51, 0.65);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.rdListHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 14px 14px 10px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(15, 23, 48, 0.55);
+}
+
+.rdH2 {
+  margin: 0;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+}
+
+.rdH2--details {
+  font-size: 18px;
+}
+
+.rdHint {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+
+kbd {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: rgba(15, 23, 48, 0.65);
+  color: var(--text);
+}
+
+.rdList {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+}
+
+.rdListItem {
+  margin: 0;
+  padding: 0;
+}
+
+.rdRow {
+  width: 100%;
+  text-align: left;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  padding: 12px 12px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: rgba(15, 23, 48, 0.35);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.rdRow:hover {
+  border-color: rgba(255, 43, 214, 0.35);
+  background: rgba(15, 23, 48, 0.55);
+}
+
+.rdRow:focus {
+  outline: none;
+  box-shadow: var(--ring);
+}
+
+.rdRow.isSelected {
+  border-color: rgba(47, 255, 226, 0.55);
+  background: linear-gradient(
+    90deg,
+    rgba(47, 255, 226, 0.14),
+    rgba(255, 43, 214, 0.08)
+  );
+}
+
+.rdRow__name {
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.rdRow__meta {
+  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rdPill {
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 5px 8px;
+  border: 1px solid rgba(120, 255, 240, 0.20);
+  background: rgba(17, 26, 51, 0.55);
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+
+.rdPill.isOk {
+  color: rgba(47, 255, 226, 0.95);
+  border-color: rgba(47, 255, 226, 0.35);
+}
+
+.rdPill.isMuted {
+  color: rgba(240, 255, 252, 0.60);
+}
+
+.rdPill.isInfo {
+  border-color: rgba(255, 230, 109, 0.30);
+  color: rgba(255, 230, 109, 0.95);
+}
+
+.rdRow__chev {
+  font-family: var(--font-mono);
+  color: rgba(255, 43, 214, 0.85);
+  align-self: center;
+}
+
+.rdEmpty {
+  padding: 18px 12px;
+  color: var(--muted);
+}
+
+.rdDetailsPane {
+  padding: 14px;
+}
+
+.rdDetailsPane--empty {
+  display: grid;
+  place-items: center;
+}
+
+.rdDetailsEmpty {
+  padding: 18px;
+  max-width: 380px;
+  text-align: left;
+}
+
+.rdDetailsEmpty__title {
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  margin-bottom: 6px;
+}
+
+.rdDetailsEmpty__text {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.rdDetails__top {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.rdDetails__sub {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-family: var(--font-mono);
+}
+
+.rdDetails__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 12px 0;
+}
+
+.rdInfoRow {
+  border: 1px solid rgba(120, 255, 240, 0.18);
+  background: rgba(15, 23, 48, 0.40);
+  border-radius: 12px;
+  padding: 10px 10px;
+}
+
+.rdInfoRow__label {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+
+.rdInfoRow__value {
+  margin-top: 4px;
+  font-weight: 800;
+  word-break: break-word;
+}
+
+.rdDetails__section {
+  padding-top: 8px;
+}
+
+.rdH3 {
+  margin: 10px 0 8px;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+  color: rgba(47, 255, 226, 0.95);
+}
+
+.rdPara {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.rdTagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rdTag {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 43, 214, 0.35);
+  background: rgba(255, 43, 214, 0.08);
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+
+.rdMuted {
+  color: var(--muted);
+}
+
+.rdFooter {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 18px 26px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+/* Modal */
+.rdModalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.68);
+  display: grid;
+  place-items: center;
+  z-index: 50;
+  padding: 14px;
+}
+
+.rdModal {
+  width: min(720px, 96vw);
+  max-height: 86vh;
+  overflow: auto;
+  border-radius: var(--radius);
+  border: 1px solid rgba(47, 255, 226, 0.35);
+  background: rgba(17, 26, 51, 0.92);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+  padding: 14px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .rdHeader__inner {
+    flex-direction: column;
+    align-items: stretch;
   }
-  to {
-    transform: rotate(360deg);
+
+  .rdStats {
+    justify-content: flex-start;
+  }
+
+  .rdToolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .rdMain {
+    grid-template-columns: 1fr;
+  }
+
+  /* On small screens, we still show an empty details card below list when not open,
+     but when a resident is selected we use the modal overlay. */
+  .rdDetailsPane {
+    margin-top: 14px;
   }
 }
 
-/* Responsive design for mobile */
-@media (max-width: 768px) {
-  .theme-toggle {
-    top: 10px;
-    right: 10px;
-    padding: 8px 16px;
-    font-size: 12px;
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .App::before {
+    opacity: 0.08;
   }
 }
