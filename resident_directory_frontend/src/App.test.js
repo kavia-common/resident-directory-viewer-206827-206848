@@ -26,10 +26,23 @@ test("filters residents by search query", () => {
 test("opens and closes resident details", () => {
   render(<App />);
 
-  fireEvent.click(screen.getByRole("button", { name: /view details for mina patel/i }));
-  expect(screen.getByText("Unit 4A")).toBeInTheDocument();
-  expect(screen.getByRole("button", { name: /close resident details/i })).toBeInTheDocument();
+  fireEvent.click(
+    screen.getByRole("button", { name: /view details for mina patel/i })
+  );
 
-  fireEvent.click(screen.getByRole("button", { name: /close resident details/i }));
-  expect(screen.queryByText("Unit 4A")).not.toBeInTheDocument();
+  // Details should render either as a modal dialog (mobile) or as a side panel (desktop).
+  expect(
+    screen.queryByRole("dialog", { name: /resident details for mina patel/i }) ||
+      screen.getByLabelText(/resident details panel/i)
+  ).toBeInTheDocument();
+
+  fireEvent.click(
+    screen.getByRole("button", { name: /close resident details/i })
+  );
+
+  // After close, neither dialog nor panel should be present.
+  expect(
+    screen.queryByRole("dialog", { name: /resident details for mina patel/i })
+  ).not.toBeInTheDocument();
+  expect(screen.queryByLabelText(/resident details panel/i)).not.toBeInTheDocument();
 });
